@@ -1,7 +1,8 @@
 from django.urls import path
-from pizza.views import pizza, about_us
+from .views import pizza, about_us, burger
 
 urlpatterns = [
+    path("burgers", burger, name="burgers"),
     path("", pizza, name="pizzas"),
     path("about-us/", about_us, name="about_us")
 ]

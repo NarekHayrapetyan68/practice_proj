@@ -1,5 +1,6 @@
 from django.contrib import admin
 
-from pizza.models import Pizza
+from .models import Pizza,Burger
 
 admin.site.register(Pizza)
+admin.site.register(Burger)
