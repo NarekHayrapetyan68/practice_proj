@@ -1,7 +1,6 @@
 from django.core.paginator import Paginator
-from django.shortcuts import render
-
-from .models import Pizza, Burger
+from django.shortcuts import render, get_object_or_404
+from .models import Pizza, Burger, Restaurant
 
 
 def pizza(request):
@@ -10,6 +9,10 @@ def pizza(request):
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     return render(request, "pizza/all_pizza.html", {"pizzas": page_obj})
+
+# def pizza_detail(request, pk: int):
+#     pizza = get_object_or_404(Pizza, pk=pk)
+#     return render(request, "pizza/all_pizza.html", {"pizza": pizza})
 
 
 def burger(request):
@@ -22,3 +25,11 @@ def burger(request):
 
 def about_us(request):
     return render(request, "pizza/about_us.html")
+
+
+def home(request):
+    restaurants = Restaurant.objects.all().order_by('pk')
+    paginator = Paginator(restaurants, 4)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    return render(request, "pizza/home.html", {"restaurants": page_obj})
