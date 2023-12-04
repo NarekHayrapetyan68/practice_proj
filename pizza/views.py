@@ -10,9 +10,14 @@ def pizza(request):
     page_obj = paginator.get_page(page_number)
     return render(request, "pizza/all_pizza.html", {"pizzas": page_obj})
 
-# def pizza_detail(request, pk: int):
-#     pizza = get_object_or_404(Pizza, pk=pk)
-#     return render(request, "pizza/all_pizza.html", {"pizza": pizza})
+
+def rest_detail(request):
+    restaurant = Restaurant.objects.all()
+    context = {
+        'restaurant': restaurant,
+    }
+
+    return render(request, "pizza/restaurant_page.html", context)
 
 
 def burger(request):

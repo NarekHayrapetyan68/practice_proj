@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<link rel="stylesheet" href="{% static "css/rest_detail.css" %}">
+
+<div id="header">
+<h1>La Saveur</h1>
+<p>The Traditional Fench Taste</p>
+  </div>
+<div class="container">
+{% for pizza in restaurant.pizza.all %}
+<div class="card">
+  <div class="card-image">
+    <img src="{{pizza.image.url}}">
+  </div>
+  <div class="card-text">
+    <p class="card-meal-type">{{pizza.price}}</p>
+    <h2 class="card-title">{{pizza.pizza_name}}</h2>
+    <p class="card-body">Eggs Benedict with hollandaise sauce, crispy bacon and an assortment of garden herbs.</p>
+  </div>
+  <div class="card-price">$56</div>
+</div>
+{% endfor %}
+</div>
+{% endblock %}
