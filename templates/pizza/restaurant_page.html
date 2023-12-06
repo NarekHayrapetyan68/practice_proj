@@ -4,24 +4,32 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static "css/rest_detail.css" %}">
+<link rel="stylesheet" href="{% static "css/button.css" %}">
 
 <div id="header">
-<h1>La Saveur</h1>
-<p>The Traditional Fench Taste</p>
-  </div>
-<div class="container">
-{% for pizza in restaurant.pizza.all %}
-<div class="card">
-  <div class="card-image">
-    <img src="{{pizza.image.url}}">
-  </div>
-  <div class="card-text">
-    <p class="card-meal-type">{{pizza.price}}</p>
-    <h2 class="card-title">{{pizza.pizza_name}}</h2>
-    <p class="card-body">Eggs Benedict with hollandaise sauce, crispy bacon and an assortment of garden herbs.</p>
-  </div>
-  <div class="card-price">$56</div>
+<h1>{{restaurant.restaurant_name}}</h1>
+    <form method="post" id="itemForm">
+        {% csrf_token %}
+        <button type="submit" name="item_type" value="pizza" class="btn btn-primary btn-sm">Pizza</button>
+        <button type="submit" name="item_type" value="burger" class="btn btn-secondary btn-sm">Burger</button>
+    </form>
 </div>
-{% endfor %}
+<div class="container">
+<div class="container">
+  {% for item in items %}
+    <div class="card">
+      <div class="card-image">
+        <a href="{% url page item.name %}">
+          <img src="{{ item.image.url }}">
+        </a>
+      </div>
+      <div class="card-text">
+        <p class="card-meal-type">{{ item.rate }}</p>
+        <h2 class="card-title">{{ item.item_name }}</h2>
+        <p class="card-body">{{ item.description }}</p>
+      </div>
+      <div class="card-price">${{ item.price }}</div>
+    </div>
+  {% endfor %}
 </div>
 {% endblock %}

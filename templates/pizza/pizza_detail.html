@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static "css/pizza_detail.css" %}">
+<div class="main">
+  <ul class="cards">
+    <li class="cards_item" id="item_salad">
+      <div class="card">
+        <div class="card_price">${{pizzas.price}}</div>
+        <div class="card_image"><a href="{%url 'pizza_page' pizzas.name%}"><img src="{{pizzas.image.url}}" width="900"></a></div>
+        <div class="card_content">
+          <h2 class="card_title">{{pizzas.name}}</h2>
+          <div class="card_text">
+            <p><font color="white">{{pizzas.description}}</font></p>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+{% endblock %}

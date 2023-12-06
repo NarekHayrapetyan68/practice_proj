@@ -11,14 +11,15 @@
         {% for pizza in pizzas %}
             <figure class="pizza">
                 <div class="pizza__hero">
-                    <img src="{% if pizza.image %}{{ pizza.image.url }}{% else %}
-                {% static "img/no_image.jpeg" %}
+                    <a href="{% url 'pizza_page' pizza.name%}"><img src="{% if pizza.image %}{{ pizza.image.url }}{% else %}
+                {% static 'img/no_image.jpeg' %}
                 {% endif %}"
                          alt="pizza" class="pizza__img">
+                    </a>
                 </div>
                 <div class="pizza__content">
                     <div class="pizza__title">
-                        <h1 class="pizza__heading">Pizza {{ pizza.pizza_name }}🥩</h1>
+                        <h1 class="pizza__heading">Pizza {{ pizza.name }}🥩</h1>
                         <div class="pizza__tag pizza__tag--1">#meat</div>
                         <div class="pizza__tag pizza__tag--2">#italian</div>
                     </div>

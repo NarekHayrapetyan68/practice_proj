@@ -3,11 +3,11 @@ from django.core.validators import MinValueValidator,MaxValueValidator
 
 
 def upload_pizza_image(instance, filename):
-    return f"{instance.pizza_name}/{filename}"
+    return f"{instance.name}/{filename}"
 
 
 def upload_burger_image(instance, filename):
-    return f"{instance.burger_name}/{filename}"
+    return f"{instance.name}/{filename}"
 
 
 def upload_restaurant_image(instance, filename):
@@ -34,7 +34,7 @@ class Restaurant(models.Model):
 
 
 class Pizza(models.Model):
-    pizza_name = models.CharField(max_length=150)
+    name = models.CharField(max_length=150)
     description = models.TextField(blank=True, null=True)
     rate = models.FloatField(default=0, validators=[MinValueValidator(1), MaxValueValidator(5)])
     prepare_time = models.FloatField(null=True, blank=True)
@@ -45,11 +45,11 @@ class Pizza(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.pizza_name
+        return self.name
 
 
 class Burger(models.Model):
-    burger_name = models.CharField(max_length=150)
+    name = models.CharField(max_length=150)
     description = models.TextField(blank=True, null=True)
     rate = models.FloatField(default=0)
     prepare_time = models.FloatField(null=True, blank=True)
@@ -59,7 +59,6 @@ class Burger(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
     def __str__(self):
-        return self.burger_name
-
-
+        return self.name
