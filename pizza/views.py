@@ -51,11 +51,11 @@ def home(request):
     return render(request, "pizza/home.html", {"restaurants": page_obj})
 
 
-def pizza_detail(request, pizza_name):
-    pizzas = get_object_or_404(Pizza, pizza_name=pizza_name)
+def pizza_detail(request, name):
+    pizzas = get_object_or_404(Pizza, name=name)
     return render(request, 'pizza/pizza_detail.html', {'pizzas': pizzas})
 
 
-def burger_detail(request, burger_name):
-    burgers = get_object_or_404(Burger, burger_name=burger_name)
+def burger_detail(request, name):
+    burgers = get_object_or_404(Burger, name=name)
     return render(request, 'pizza/burger_detail.html', {'burgers': burgers})
