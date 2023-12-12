@@ -3,6 +3,7 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static "css/pizza_detail.css" %}">
+<link rel="stylesheet" href="{% static "css/table.css" %}">
 <div class="main">
   <ul class="cards">
     <li class="cards_item" id="item_salad">
@@ -18,5 +19,29 @@
       </div>
     </li>
   </ul>
+  <table border="1">
+    <thead>
+        <tr>
+            <th>Num</th>
+            <th>Name</th>
+            <th>Photo</th>
+            <th>Price</th>
+            <th>Calories</th>
+        </tr>
+    </thead>
+    <tbody>
+    {%for sim in similar%}
+        <tr>
+            <td>{{sim.pk}}</td>
+            <td>{{sim.name}}</td>
+            <td><img src="{{sim.image.url}}"></td>
+            <td>{{sim.price}}</td>
+            <td>{{sim.calories}}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
 </div>
+
 {% endblock %}

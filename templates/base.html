@@ -18,13 +18,19 @@
 <ul class="navbar-container">
 
     <li class="navbar-item">Home<span class="navbar-item_label"><a href="">Home</a></span></li>
-    <li class="navbar-item">Pizza<span class="navbar-item_label"><a href="{% url 'pizzas' %}">Pizzas</a></span></li>
-    <li class="navbar-item">Burgers<span class="navbar-item_label"><a href="{% url 'burgers' %}">Burgers</a></span>
+    <li class="navbar-item">Food<span class="navbar-item_label">Food</span>
+        <ul class="navbar-container_sub">
+            <li class="navbar-item_sub"><a href="{% url 'pizzas' %}">Pizzas</a></li>
+            <li class="navbar-item_sub"><a href="{% url 'burgers' %}">Burgers</a></li>
+            <li class="navbar-item_sub">Product 3</li>
+        </ul>
+    </li>
+    <li class="navbar-item">aaa<span class="navbar-item_label">aaa</span>
     </li>
     <li class="navbar-item">Products<span class="navbar-item_label">Products</span>
         <ul class="navbar-container_sub">
-            <li class="navbar-item_sub"><a href="{% url 'home' %}">restpage</a></li>
-            <li class="navbar-item_sub">Product 2</li>
+            <li class="navbar-item_sub"><a href="{% url 'home' %}">Restaurant</a></li>
+            <li class="navbar-item_sub"><a href=" {% url 'search_page' %}">Search</a></li>
             <li class="navbar-item_sub">Product 3</li>
         </ul>
     </li>

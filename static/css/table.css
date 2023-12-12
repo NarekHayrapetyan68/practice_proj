@@ -1,0 +1,24 @@
+/* Style for the table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+/* Style for table headers */
+th, td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+/* Style for alternate rows */
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Style for images */
+img {
+    max-width: 100%;
+    height: auto;
+}

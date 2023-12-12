@@ -1,5 +1,6 @@
 from django.db import models
-from django.core.validators import MinValueValidator,MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 
 def upload_pizza_image(instance, filename):
@@ -36,7 +37,7 @@ class Restaurant(models.Model):
 class Pizza(models.Model):
     name = models.CharField(max_length=150)
     description = models.TextField(blank=True, null=True)
-    rate = models.FloatField(default=0, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    rate = models.FloatField(default=0, validators=[MinValueValidator(1), MaxValueValidator(10)])
     prepare_time = models.FloatField(null=True, blank=True)
     calories = models.FloatField(blank=True)
     price = models.FloatField()
@@ -51,7 +52,7 @@ class Pizza(models.Model):
 class Burger(models.Model):
     name = models.CharField(max_length=150)
     description = models.TextField(blank=True, null=True)
-    rate = models.FloatField(default=0)
+    rate = models.FloatField(default=0,validators=[MinValueValidator(1), MaxValueValidator(10)])
     prepare_time = models.FloatField(null=True, blank=True)
     calories = models.FloatField(blank=True)
     price = models.FloatField()

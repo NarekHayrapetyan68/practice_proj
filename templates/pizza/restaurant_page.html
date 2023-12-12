@@ -5,6 +5,9 @@
 {% block content %}
 <link rel="stylesheet" href="{% static "css/rest_detail.css" %}">
 <link rel="stylesheet" href="{% static "css/button.css" %}">
+<link rel="stylesheet" href="{% static "css/pagination.css" %}">
+
+
 
 <div id="header">
 <h1>{{restaurant.restaurant_name}}</h1>
@@ -31,5 +34,14 @@
       <div class="card-price">${{ item.price }}</div>
     </div>
   {% endfor %}
+    {% include "layouts/pagination.html" with product=items %}
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <button type="submit" name="add_burger" class="btn btn-success"><a href="{% url 'add_burger_to_restaurant' restaurant.restaurant_name %}"
+                                                                           class="btn btn-success">Add Burger</a>
+        </button>
+        <button type="submit" name="add_pizza" class="btn btn-success"><a href="{% url 'add_pizza_to_restaurant' restaurant.restaurant_name %}"
+                                                                          class="btn btn-success">Add Pizza</a></button>
+    </form>
 </div>
 {% endblock %}
