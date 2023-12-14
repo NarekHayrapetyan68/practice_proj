@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.urls import reverse
 
 
 
@@ -45,6 +46,9 @@ class Pizza(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def get_absolute_url(self):
+        return reverse("pizza_page", kwargs={'name': self.name})
+
     def __str__(self):
         return self.name
 
@@ -52,14 +56,16 @@ class Pizza(models.Model):
 class Burger(models.Model):
     name = models.CharField(max_length=150)
     description = models.TextField(blank=True, null=True)
-    rate = models.FloatField(default=0,validators=[MinValueValidator(1), MaxValueValidator(10)])
+    rate = models.FloatField(default=0, null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(10)])
     prepare_time = models.FloatField(null=True, blank=True)
-    calories = models.FloatField(blank=True)
+    calories = models.FloatField(blank=True,null=True)
     price = models.FloatField()
     image = models.ImageField(upload_to=upload_burger_image, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def get_absolute_url(self):
+        return reverse("burger_page", kwargs={'name': self.name})
 
     def __str__(self):
         return self.name

@@ -1,7 +1,6 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Pizza, Burger, Restaurant
-from django.views.decorators.csrf import csrf_protect
 from django.db.models import Q
 from .forms import SearchForm, BurgerForm, PizzaForm
 
@@ -13,17 +12,13 @@ def pizza(request):
     page_obj = paginator.get_page(page_number)
     return render(request, "pizza/all_pizza.html", {"pizzas": page_obj})
 
-@csrf_protect
+
 def rest_detail(request, restaurant_name):
     restaurant = get_object_or_404(Restaurant, restaurant_name=restaurant_name)
     items_to_display = restaurant.pizzas.all()
-    page_to_display = 'pizza_page'
-
-    if request.method == 'POST':
-        item_type = request.POST.get('item_type')
-        if item_type == 'burger':
+    if burgers := request.GET.get("burgers"):
+        if burgers == "True":
             items_to_display = restaurant.burgers.all()
-            page_to_display = 'burger_page'
 
     paginator = Paginator(items_to_display, 3)
     page_number = request.GET.get("page")
@@ -32,7 +27,6 @@ def rest_detail(request, restaurant_name):
     context = {
         'restaurant': restaurant,
         'items': page_obj,
-        'page': page_to_display
     }
 
     return render(request, "pizza/restaurant_page.html", context)
@@ -80,27 +74,41 @@ def burger_detail(request, name):
     return render(request, 'pizza/burger_detail.html', {'burgers': burgers , 'similar': similar_burgers})
 
 
+from django.db.models import Q
+
 def search(request):
     form = SearchForm()
     result_product = []
-    if name := request.GET.get("name"):
+
+    if request.method == 'GET':
         form = SearchForm(request.GET)
-        if request.GET.get("product_type") == "burger":
-            product_table = Burger
-            name_search = Q(name__icontains=name)
-        else:
-            product_table = Pizza
-            name_search = Q(name__icontains=name)
+
         if form.is_valid():
+            name = form.cleaned_data.get("name")
+            product_type = form.cleaned_data.get("product_type")
+            rate_from = form.cleaned_data.get("rate_from")
+            rate_until = form.cleaned_data.get("rate_until")
             calories_until = form.cleaned_data.get("calories_until")
-            result_product = product_table.objects.filter(
-                name_search |
-                (Q(rate__lte=form.cleaned_data.get("rate_until") or 0) & Q(
-                    rate__gte=form.cleaned_data.get("rate_from") or 0)) |
-                Q(calories__lte=calories_until if calories_until is not None else 0)
-            )
-    return render(request, "pizza/search.html", {"form": form,
-                                                 "result_product": result_product})
+
+            base_query = Q()
+
+            if name:
+                base_query &= Q(name__icontains=name)
+
+            if product_type:
+                if product_type == "burger":
+                    result_product = Burger.objects.filter(base_query)
+                elif product_type == "pizza":
+                    result_product = Pizza.objects.filter(base_query)
+            else:
+                base_query &= Q(rate__gte=rate_from) if rate_from is not None else Q()
+                base_query &= Q(rate__lte=rate_until) if rate_until is not None else Q()
+                base_query &= Q(calories__lte=calories_until) if calories_until is not None else Q()
+
+                result_product = Pizza.objects.filter(base_query)
+
+    return render(request, "pizza/search.html", {"form": form, "result_product": result_product})
+
 
 
 def add_burger_to_restaurant(request, restaurant_name):

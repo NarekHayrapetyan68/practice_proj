@@ -11,24 +11,26 @@
 
 <div id="header">
 <h1>{{restaurant.restaurant_name}}</h1>
-    <form method="post" id="itemForm">
-        {% csrf_token %}
-        <button type="submit" name="item_type" value="pizza" class="btn btn-primary btn-sm">Pizza</button>
-        <button type="submit" name="item_type" value="burger" class="btn btn-secondary btn-sm">Burger</button>
-    </form>
+    <div class="w3-section w3-bottombar w3-padding-16">
+        <span class="w3-margin-right">Filter:</span>
+        <button class="w3-button w3-black"><a href="?pizzas=True">Pizza</a></button>
+        <button class="w3-button w3-black"><a href="?burgers=True">Burgers</a></button>
+
+    </div>
+
 </div>
 <div class="container">
 <div class="container">
   {% for item in items %}
     <div class="card">
       <div class="card-image">
-        <a href="{% url page item.name %}">
+        <a href="{{ item.get_absolute_url  }}">
           <img src="{{ item.image.url }}" height="260" width="400">
         </a>
       </div>
       <div class="card-text">
         <p class="card-meal-type">{{ item.rate }}</p>
-        <h2 class="card-title">{{ item.item_name }}</h2>
+        <h2 class="card-title">{{ item.name }}</h2>
         <p class="card-body">{{ item.description }}</p>
       </div>
       <div class="card-price">${{ item.price }}</div>
