@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import pizza, about_us, burger, home, rest_detail,\
-    pizza_detail, burger_detail, search, add_burger_to_restaurant, add_pizza_to_restaurant
+from .views import pizza, about_us, burger, home, rest_detail, \
+    pizza_detail, burger_detail, search, add_burger_to_restaurant, add_pizza_to_restaurant, \
+    update_pizza, update_burger, delete_pizza, delete_burger
 
 urlpatterns = [
     path("burgers/", burger, name="burgers"),
@@ -11,6 +12,11 @@ urlpatterns = [
     path("pizzas/<str:name>", pizza_detail, name="pizza_page"),
     path("burgers/<str:name>", burger_detail, name="burger_page"),
     path("search/", search, name="search_page"),
-    path('restaurant/<str:restaurant_name>/add_burger/', add_burger_to_restaurant, name='add_burger_to_restaurant'),
-    path('restaurant/<str:restaurant_name>/add_pizza/', add_pizza_to_restaurant, name='add_pizza_to_restaurant'),
+    path("restaurant/<str:restaurant_name>/add_burger/", add_burger_to_restaurant, name="add_burger_to_restaurant"),
+    path("restaurant/<str:restaurant_name>/add_pizza/", add_pizza_to_restaurant, name="add_pizza_to_restaurant"),
+    path("pizzas/<str:name>/update/", update_pizza, name="update_pizza"),
+    path("burgers/<str:name>/update/", update_burger, name="update_burger"),
+    path("pizzas/<str:name>/delete/", delete_pizza, name="delete_pizza"),
+    path("burgers/<str:name>/delete/", delete_burger, name="delete_burger"),
+
 ]

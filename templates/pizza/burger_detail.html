@@ -14,6 +14,10 @@
           <h2 class="card_title">{{burgers.name}}</h2>
           <div class="card_text">
             <p><font color="white">{{burgers.description}}</font></p>
+              <button type="submit" name="add_burger" class="btn btn-success"><a href="{% url 'update_burger' burgers.name %}"
+                                                                           class="btn btn-success">Update</a></button>
+              <button type="submit" name="add_burger" class="btn btn-success"><a href="{% url 'delete_burger' burgers.name %}"
+                                                                           class="btn btn-success">Delete</a></button>
           </div>
         </div>
       </div>

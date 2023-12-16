@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Pizza, Burger, Restaurant
 from django.db.models import Q
 from .forms import SearchForm, BurgerForm, PizzaForm
+from django.contrib import messages
 
 
 def pizza(request):
@@ -45,7 +46,7 @@ def about_us(request):
 
 
 def home(request):
-    restaurants = Restaurant.objects.all().order_by('pk')
+    restaurants = Restaurant.objects.all().order_by('pk').prefetch_related('burgers', 'pizzas')
     paginator = Paginator(restaurants, 4)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
@@ -73,8 +74,6 @@ def burger_detail(request, name):
 
     return render(request, 'pizza/burger_detail.html', {'burgers': burgers , 'similar': similar_burgers})
 
-
-from django.db.models import Q
 
 def search(request):
     form = SearchForm()
@@ -110,7 +109,6 @@ def search(request):
     return render(request, "pizza/search.html", {"form": form, "result_product": result_product})
 
 
-
 def add_burger_to_restaurant(request, restaurant_name):
     restaurant = get_object_or_404(Restaurant, restaurant_name=restaurant_name)
 
@@ -141,3 +139,43 @@ def add_pizza_to_restaurant(request,restaurant_name):
     return render(request, "pizza/add_pizza.html", {"form": form, "restaurant": restaurant})
 
 
+def update_pizza(request, name: str):
+    pizza = get_object_or_404(Pizza, name=name)
+    form = PizzaForm(instance=pizza)
+    if request.method == "POST":
+        form = PizzaForm(request.POST, request.FILES, instance=pizza)
+        if form.is_valid():
+            form.save()
+            messages.info(request, f"{pizza.name} was updated successfully!")
+            return redirect("pizzas")
+    return render(request, "pizza/pizza_update.html", {"form": form})
+
+
+def update_burger(request, name: str):
+    burger = get_object_or_404(Burger, name=name)
+    form = BurgerForm(instance=burger)
+    if request.method == "POST":
+        form = BurgerForm(request.POST, request.FILES, instance=burger)
+        if form.is_valid():
+            form.save()
+            messages.info(request, f"{burger.name} was updated successfully!")
+            return redirect("burgers")
+    return render(request, "pizza/burger_update.html", {"form": form})
+
+
+def delete_pizza(request, name: str):
+    pizza = get_object_or_404(Pizza, name=name)
+    if request.method == 'POST':
+        pizza.delete()
+        messages.error(request, f"{pizza.name} was deleted!")
+        return redirect('pizzas')
+    return render(request, "pizza/delete_pizza.html", {"pizza": pizza})
+
+
+def delete_burger(request, name: str):
+    burger = get_object_or_404(Burger, name=name)
+    if request.method == 'POST':
+        burger.delete()
+        messages.error(request, f"{burger.name} was deleted!")
+        return redirect('burgers')
+    return render(request, "pizza/delete_burger.html", {"burger": burger})
