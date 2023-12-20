@@ -1,4 +1,6 @@
 from django import forms
+from django.forms import inlineformset_factory
+
 from .models import Burger, Pizza, Restaurant
 
 RATE_CHOICES = [(0, "---")] + [(rate, f"{rate}") for rate in range(1, 11)]
@@ -45,3 +47,13 @@ class PizzaForm(forms.ModelForm):
     class Meta:
         model = Pizza
         fields = '__all__'
+
+
+class RestaurantForm(forms.ModelForm):
+    # burgers = forms.ModelMultipleChoiceField(queryset=Burger.objects.all())
+    # pizzas = forms.ModelMultipleChoiceField(queryset=Pizza.objects.all())
+
+    class Meta:
+        model = Restaurant
+        fields = '__all__'
+

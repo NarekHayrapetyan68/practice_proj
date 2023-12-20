@@ -145,5 +145,5 @@ if DEBUG:
 
 
 MESSAGE_TAGS = {
-    messages.ERROR: '',
-    50: 'critical',}
+    messages.ERROR: "danger",
+}

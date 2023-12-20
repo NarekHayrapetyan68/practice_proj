@@ -1,7 +1,11 @@
 from django.urls import path
-from .views import pizza, about_us, burger, home, rest_detail, \
-    pizza_detail, burger_detail, search, add_burger_to_restaurant, add_pizza_to_restaurant, \
-    update_pizza, update_burger, delete_pizza, delete_burger
+
+from .views.details import pizza_detail, burger_detail, burger, pizza,\
+                      rest_detail, about_us, search, home
+
+from .views.views import update_pizza, update_burger, delete_burger, delete_pizza, add_burger_to_restaurant,\
+    add_pizza_to_restaurant, add_restaurants
+
 
 urlpatterns = [
     path("burgers/", burger, name="burgers"),
@@ -18,5 +22,6 @@ urlpatterns = [
     path("burgers/<str:name>/update/", update_burger, name="update_burger"),
     path("pizzas/<str:name>/delete/", delete_pizza, name="delete_pizza"),
     path("burgers/<str:name>/delete/", delete_burger, name="delete_burger"),
+    path("add_restaurant/", add_restaurants, name="add_restaurants"),
 
 ]

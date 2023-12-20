@@ -38,7 +38,11 @@
         <tr>
             <td>{{sim.pk}}</td>
             <td>{{sim.name}}</td>
-            <td><img src="{{sim.image.url}}"></td>
+            <td><img src="{% if sim.image %}
+                                {{ sim.image.url }}
+                                {% else %}
+                                {% static "img/no_image.jpeg" %}
+                                {% endif %}"></td>
             <td>{{sim.price}}</td>
             <td>{{sim.calories}}</td>
         </tr>
