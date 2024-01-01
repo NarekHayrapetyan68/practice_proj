@@ -38,9 +38,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "pizza.apps.PizzaConfig",
+    "users.apps.UsersConfig",
     "crispy_forms",
     "crispy_bootstrap5",
     "debug_toolbar",
+    "phonenumber_field",
 ]
 
 MIDDLEWARE = [
@@ -133,6 +135,12 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "home"
+LOGOUT_REDIRECT_URL = "home"
+
+
+
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
@@ -147,3 +155,4 @@ if DEBUG:
 MESSAGE_TAGS = {
     messages.ERROR: "danger",
 }
+

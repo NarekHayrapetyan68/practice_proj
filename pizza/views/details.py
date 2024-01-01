@@ -3,55 +3,94 @@ from django.shortcuts import render, get_object_or_404, redirect
 from pizza.models import Pizza, Burger, Restaurant
 from django.db.models import Q
 from pizza.forms import SearchForm, BurgerForm, PizzaForm, RestaurantForm
+from django.views.generic import ListView, DetailView, TemplateView
 
 
-def rest_detail(request, restaurant_name):
-    restaurant = get_object_or_404(Restaurant, restaurant_name=restaurant_name)
-    items_to_display = restaurant.pizzas.all()
-    if burgers := request.GET.get("burgers"):
+class RestaurantDetailView(ListView):
+    model = Restaurant
+    template_name = 'pizza/restaurant_page.html'
+    context_object_name = 'items'
+    paginate_by = 3
+
+    def get_queryset(self):
+        restaurant_name = self.kwargs.get('restaurant_name')
+        restaurant = get_object_or_404(Restaurant, restaurant_name=restaurant_name)
+        burgers = self.request.GET.get("burgers")
+
         if burgers == "True":
-            items_to_display = restaurant.burgers.all()
+            return restaurant.burgers.all()
+        else:
+            return restaurant.pizzas.all()
 
-    paginator = Paginator(items_to_display, 3)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
-
-    context = {
-        'restaurant': restaurant,
-        'items': page_obj,
-    }
-
-    return render(request, "pizza/restaurant_page.html", context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        restaurant_name = self.kwargs.get('restaurant_name')
+        context['restaurant'] = get_object_or_404(Restaurant, restaurant_name=restaurant_name)
+        return context
 
 
-def pizza_detail(request, name):
-    pizzas = get_object_or_404(Pizza, name=name)
-    similar_pizzas = Pizza.objects.exclude(name=name)
-    price = pizzas.price
-    calories = pizzas.calories
-    similar_pizzas = similar_pizzas.filter((Q(price__lte=price+5) & Q(price__gte=price-5)) |
-                                           (Q(calories__gte=calories-5) & Q(calories__lte=calories+5)))
+class PizzaDetailView(DetailView):
+    model = Pizza
+    template_name = 'pizza/pizza_detail.html'
+    context_object_name = 'pizzas'
+    pk_url_kwarg = 'name'
 
-    return render(request, 'pizza/pizza_detail.html', {'pizzas': pizzas, 'similar': similar_pizzas})
+    def get_object(self, queryset=None):
+        name = self.kwargs.get('name')
+        return get_object_or_404(Pizza, name=name)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pizza = self.object
+        similar_pizzas = Pizza.objects.exclude(name=pizza.name)
+
+        price = pizza.price
+        calories = pizza.calories
+
+        similar_pizzas = similar_pizzas.filter(
+            (Q(price__lte=price + 5) & Q(price__gte=price - 5)) |
+            (Q(calories__gte=calories - 5) & Q(calories__lte=calories + 5))
+        )
+
+        context['similar'] = similar_pizzas
+        return context
 
 
-def burger_detail(request, name):
-    burgers = get_object_or_404(Burger, name=name)
-    similar_burgers = Burger.objects.exclude(name=name)
-    price = burgers.price
-    calories = burgers.calories
-    similar_burgers = similar_burgers.filter((Q(price__in=range(int(price)-5, int(price)+5)) |
-                                              Q(calories__in=range(int(calories)-50, int(calories)+100))))
+class BurgerDetailView(DetailView):
+    model = Burger
+    template_name = "pizza/burger_detail.html"
+    context_object_name = 'burgers'
+    pk_url_kwarg = 'name'
 
-    return render(request, 'pizza/burger_detail.html', {'burgers': burgers , 'similar': similar_burgers})
+    def get_object(self, queryset=None):
+        name = self.kwargs.get('name')
+        return get_object_or_404(Burger, name=name)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        burger = self.object
+        similar_burger = Burger.objects.exclude(name=burger.name)
+
+        price = burger.price
+        calories = burger.calories
+
+        similar_burger = similar_burger.filter(
+            (Q(price__lte=price + 5) & Q(price__gte=price - 5)) |
+            (Q(calories__gte=calories - 5) & Q(calories__lte=calories + 5))
+        )
+
+        context['similar'] = similar_burger
+        return context
 
 
-def search(request):
-    form = SearchForm()
-    result_product = []
+class SearchView(ListView):
+    template_name = 'pizza/search.html'
+    context_object_name = 'result_product'
+    form_class = SearchForm
 
-    if request.method == 'GET':
-        form = SearchForm(request.GET)
+    def get_queryset(self):
+        form = self.form_class(self.request.GET)
+        queryset = []
 
         if form.is_valid():
             name = form.cleaned_data.get("name")
@@ -67,42 +106,54 @@ def search(request):
 
             if product_type:
                 if product_type == "burger":
-                    result_product = Burger.objects.filter(base_query)
+                    queryset = Burger.objects.filter(base_query)
                 elif product_type == "pizza":
-                    result_product = Pizza.objects.filter(base_query)
+                    queryset = Pizza.objects.filter(base_query)
             else:
                 base_query &= Q(rate__gte=rate_from) if rate_from is not None else Q()
                 base_query &= Q(rate__lte=rate_until) if rate_until is not None else Q()
                 base_query &= Q(calories__lte=calories_until) if calories_until is not None else Q()
 
-                result_product = Pizza.objects.filter(base_query)
+                queryset = Pizza.objects.filter(base_query)
 
-    return render(request, "pizza/search.html", {"form": form, "result_product": result_product})
+        return queryset
 
-
-def about_us(request):
-    return render(request, "pizza/about_us.html")
-
-
-def home(request):
-    restaurants = Restaurant.objects.all().order_by('pk').prefetch_related('burgers', 'pizzas')
-    paginator = Paginator(restaurants, 4)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
-    return render(request, "pizza/home.html", {"restaurants": page_obj})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.form_class(self.request.GET)
+        return context
 
 
-def burger(request):
-    burgers = Burger.objects.all()
-    paginator = Paginator(burgers, 2)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
-    return render(request, "pizza/all_burger.html", {"burgers": page_obj})
+class AboutUsView(TemplateView):
+    template_name = "pizza/about_us.html"
 
 
-def pizza(request):
-    pizzas = Pizza.objects.all()
-    paginator = Paginator(pizzas, 2)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
-    return render(request, "pizza/all_pizza.html", {"pizzas": page_obj})
+class HomeView(ListView):
+    model = Restaurant
+    template_name = "pizza/home.html"
+    context_object_name = 'restaurants'
+    paginate_by = 4
+    ordering = ['pk']
+
+    def get_queryset(self):
+        return Restaurant.objects.all().order_by('pk').prefetch_related('burgers', 'pizzas')
+
+
+class BurgerView(ListView):
+    model = Burger
+    template_name = "pizza/all_burger.html"
+    context_object_name = 'burgers'
+    paginate_by = 2
+
+    def get_queryset(self):
+        return Burger.objects.all().order_by('pk')
+
+
+class PizzaView(ListView):
+    model = Pizza
+    template_name = "pizza/all_pizza.html"
+    context_object_name = 'pizzas'
+    paginate_by = 2
+
+    def get_queryset(self):
+        return Pizza.objects.all().order_by('pk')

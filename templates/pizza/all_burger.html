@@ -38,21 +38,21 @@
 
         {% endfor %}
         <ul class="pagination modal-4">
-            {% if burgers.has_previous %}
-                <li><a href="?page={{ burgers.previous_page_number }}" class="prev">
+            {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}" class="prev">
                     <i class="fa fa-chevron-left"></i>
                     Previous
                 </a>
                 </li>
-                 <li><a href="?page={{ burgers.previous_page_number }}">
-                     {{ burgers.previous_page_number }}</a></li>
+                 <li><a href="?page={{ page_obj.previous_page_number }}">
+                     {{ page_obj.previous_page_number }}</a></li>
             {% endif %}
-            <li><a href="#" class="active">{{ burgers.number }}</a></li>
+            <li><a href="#" class="active">{{ page_obj.number }}</a></li>
 
-        {% if burgers.has_next %}
-            <li><a href="?page={{ burgers.next_page_number }}">
-                {{ burgers.next_page_number }}</a></li>
-            <li><a href="?page={{ burgers.next_page_number }}" class="next">
+        {% if page_obj.has_next %}
+            <li><a href="?page={{ page_obj.next_page_number }}">
+                {{ page_obj.next_page_number }}</a></li>
+            <li><a href="?page={{ page_obj.next_page_number }}" class="next">
                 Next
                 <i class="fa fa-chevron-right"></i>
             </a></li>
